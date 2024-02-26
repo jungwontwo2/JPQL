@@ -1,9 +1,6 @@
 package jpql;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -22,6 +19,12 @@ public class JpaMain {
             member.setUsername("member1");
             em.persist(member);
             tx.commit();
+
+            Member singleResult = em.createQuery("select m from Member m where m.username = :username", Member.class)
+                    .setParameter("username", "member1")
+                    .getSingleResult();
+            System.out.println("singleResult = " + singleResult.getUsername());
+
         } catch (Exception e){
             tx.rollback();
         }finally {
