@@ -20,15 +20,15 @@ public class JpaMain {
             em.persist(team);
 
             Member member1 = new Member();
-            member1.setUsername("member1");
+            member1.setUsername("teamA");
             member1.setAge(10);
             member1.setTeam(team);
             em.persist(member1);
 
             em.flush();
             em.clear();
-
-            String query = "select m From Member m join m.team t";
+            //팀 이름이 teamA인 팀만 조인
+            String query = "select m From Member m left outer join m.team t on t.name='teamA'";
             List<Member> result = em.createQuery(query, Member.class).getResultList();
 
 
