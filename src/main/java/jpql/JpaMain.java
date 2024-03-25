@@ -15,32 +15,23 @@ public class JpaMain {
         tx.begin();
         //비영속
         try{
-            Team teamA = new Team();
-            teamA.setName("teamA");
-            em.persist(teamA);
+            for (int i = 0; i < 100; i++) {
+                Member member1 = new Member();
+                member1.setAge(i);
+                em.persist(member1);
+            }
 
-            Team teamB = new Team();
-            teamB.setName("teamB");
-            em.persist(teamB);
-
-            Member member1 = new Member();
-            member1.setUsername("member1");
-            member1.setTeam(teamA);
-            em.persist(member1);
-
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            member2.setTeam(teamA);
-            em.persist(member2);
 
 
             em.flush();
             em.clear();
-            //패키지 명을 다 적고 뒤에 해당DTO.class라고 적어준다.
-            List<MemberDTO> result = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class).getResultList();
-            for (MemberDTO memberDTO : result) {
-                System.out.println(memberDTO.getUsername());
-                System.out.println(memberDTO.getAge());
+            List<Member> result = em.createQuery("select m From Member m order by m.age desc", Member.class)
+                    .setFirstResult(1)
+                    .setMaxResults(10)
+                    .getResultList();
+            System.out.println("result.size() = " + result.size());
+            for (Member member : result) {
+                System.out.println("member = " + member);
             }
 
 
