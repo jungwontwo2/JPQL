@@ -20,18 +20,15 @@ public class JpaMain {
             em.persist(team);
 
             Member member1 = new Member();
-            member1.setUsername("teamA");
+            //member1.setUsername("teamA");
             member1.setAge(10);
             member1.setTeam(team);
             em.persist(member1);
 
             em.flush();
             em.clear();
-            String query = "select "+
-                            "case when m.age<=10 then '학생요금' "+
-                    "when m.age>=60 then '경로요금' "+
-                    "else '일반요금' end "+
-                    "from Member m";
+            //이름이 있으면 m.username을 없으면 이름 없는 회원을 출력
+            String query = "select coalesce(m.username, '이름 없는 회원')from Member m";
             List<String> result = em.createQuery(query, String.class).getResultList();
 
             for (String s : result) {
