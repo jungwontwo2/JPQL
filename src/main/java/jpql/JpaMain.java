@@ -27,10 +27,13 @@ public class JpaMain {
 
             em.flush();
             em.clear();
-            //팀 이름이 teamA인 팀만 조인
-            String query = "select m From Member m left outer join m.team t on t.name='teamA'";
+            //연관관계 없는 엔티티 외부 조인(막조인 ㅋㅋ) on절에만 그 조건을 잘 적어두자
+            String query = "select m From Member m left join Team t on m.username = t.name";
             List<Member> result = em.createQuery(query, Member.class).getResultList();
-
+            for (Member member : result) {
+                System.out.println("member.getTeam() = " + member.getTeam().getName());
+                System.out.println("member.getUsername() = " + member.getUsername());
+            }
 
             tx.commit();
         } catch (Exception e){
