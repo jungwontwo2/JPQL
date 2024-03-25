@@ -15,24 +15,21 @@ public class JpaMain {
         tx.begin();
         //비영속
         try{
-            for (int i = 0; i < 100; i++) {
-                Member member1 = new Member();
-                member1.setAge(i);
-                em.persist(member1);
-            }
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
 
-
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            member1.setAge(10);
+            member1.setTeam(team);
+            em.persist(member1);
 
             em.flush();
             em.clear();
-            List<Member> result = em.createQuery("select m From Member m order by m.age desc", Member.class)
-                    .setFirstResult(1)
-                    .setMaxResults(10)
-                    .getResultList();
-            System.out.println("result.size() = " + result.size());
-            for (Member member : result) {
-                System.out.println("member = " + member);
-            }
+
+            String query = "select m From Member m join m.team t";
+            List<Member> result = em.createQuery(query, Member.class).getResultList();
 
 
             tx.commit();
