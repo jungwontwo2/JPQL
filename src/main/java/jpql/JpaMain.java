@@ -28,17 +28,21 @@ public class JpaMain {
             member1.setTeam(teamA);
             em.persist(member1);
 
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setTeam(teamA);
+            em.persist(member2);
+
 
             em.flush();
             em.clear();
+            //패키지 명을 다 적고 뒤에 해당DTO.class라고 적어준다.
+            List<MemberDTO> result = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class).getResultList();
+            for (MemberDTO memberDTO : result) {
+                System.out.println(memberDTO.getUsername());
+                System.out.println(memberDTO.getAge());
+            }
 
-            //반환타입이 명확하게 Member.class이니까 TypedQuery
-            TypedQuery<Member> query = em.createQuery("select m from Member m", Member.class);
-            //반환타입이 명확하지 않은 m.username, m.age이니까 Query
-            Query query1 = em.createQuery("select m.username, m.age from Member m");
-
-
-            List resultList = query1.getResultList();
 
             tx.commit();
         } catch (Exception e){
