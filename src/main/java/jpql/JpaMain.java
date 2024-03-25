@@ -20,15 +20,15 @@ public class JpaMain {
             em.persist(team);
 
             Member member1 = new Member();
-            //member1.setUsername("teamA");
+            member1.setUsername("관리자");
             member1.setAge(10);
             member1.setTeam(team);
             em.persist(member1);
 
             em.flush();
             em.clear();
-            //이름이 있으면 m.username을 없으면 이름 없는 회원을 출력
-            String query = "select coalesce(m.username, '이름 없는 회원')from Member m";
+            //만약 m.username이 '관리자'이면 null 반환
+            String query = "select nullif(m.username, '관리자')from Member m";
             List<String> result = em.createQuery(query, String.class).getResultList();
 
             for (String s : result) {
