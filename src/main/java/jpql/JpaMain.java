@@ -13,7 +13,6 @@ public class JpaMain {
 
         EntityTransaction tx = em.getTransaction();
         tx.begin();
-        System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzz");
         //비영속
         try{
             Team teamA = new Team();
@@ -29,35 +28,22 @@ public class JpaMain {
             member1.setTeam(teamA);
             em.persist(member1);
 
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            member2.setTeam(teamA);
-            em.persist(member2);
-
-            Member member3 = new Member();
-            member3.setUsername("member3");
-            member3.setTeam(teamB);
-            em.persist(member3);
-
-            Member member4 = new Member();
-            member4.setUsername("member4");
-            member4.setTeam(null);
-            em.persist(member4);
 
             em.flush();
             em.clear();
-            String query ="select m From Member m join fetch m.team";
 
-            List<Member> result = em.createQuery(query, Member.class).getResultList();
+            //반환타입이 명확하게 Member.class이니까 TypedQuery
+            TypedQuery<Member> query = em.createQuery("select m from Member m", Member.class);
+            //반환타입이 명확하지 않은 m.username, m.age이니까 Query
+            Query query1 = em.createQuery("select m.username, m.age from Member m");
 
-            for (Member member : result) {
-                System.out.println("member = " + member.getUsername()+","+member.getTeam().getName() );
-            }
+
+            List resultList = query1.getResultList();
 
             tx.commit();
         } catch (Exception e){
-            e.printStackTrace();
             tx.rollback();
+            e.printStackTrace();
         }finally {
             em.close();
         }
